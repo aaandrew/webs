@@ -1,4 +1,5 @@
 window.onload = function() {
+  var socket = io();
 
   var alphabet = ['a', 'b', 'c', 'd', 'e', 'f', 'g', 'h',
     'i', 'j', 'k', 'l', 'm', 'n', 'o', 'p', 'q', 'r', 's',
@@ -9,10 +10,8 @@ window.onload = function() {
   var chosenCategory; // Selected catagory
   var getHint; // Word getHint
   var word; // Selected word
-  var guess; // Geuss
-  var geusses = []; // Stored geusses
-  var lives; // Lives
-  var counter; // Count correct geusses
+  var guess; // Guess
+  var guesses = []; // Stored guesses
   var space; // Number of spaces in word '-'
 
   // Get elements
@@ -48,8 +47,8 @@ window.onload = function() {
     }
   }
 
-  // Create geusses ul
-  result = function() {
+  // Create guesses ul
+  updatePlaceholders = function(word) {
     wordHolder = document.getElementById('hold');
     correct = document.createElement('ul');
 
@@ -64,29 +63,20 @@ window.onload = function() {
         guess.innerHTML = "_";
       }
 
-      geusses.push(guess);
+      guesses.push(guess);
       wordHolder.appendChild(correct);
       correct.appendChild(guess);
     }
   }
 
   // Show lives
-  comments = function() {
+  updateLives = function(lives) {
     showLives.innerHTML = "You have " + lives + " lives";
-    if (lives < 1) {
-      showLives.innerHTML = "Game Over";
-    }
-    for (var i = 0; i < geusses.length; i++) {
-      if (counter + space === geusses.length) {
-        showLives.innerHTML = "You Win!";
-      }
-    }
   }
 
   // Animate man
-  var animate = function() {
-    var drawMe = lives;
-    drawArray[drawMe]();
+  var animate = function(lives) {
+    drawArray[lives]();
   }
 
   // Hangman
@@ -155,28 +145,26 @@ window.onload = function() {
   // OnClick Function
   check = function() {
     list.onclick = function() {
-      var geuss = (this.innerHTML);
+      var guess = (this.innerHTML);
       this.setAttribute("class", "active");
       this.onclick = null;
       for (var i = 0; i < word.length; i++) {
-        if (word[i] === geuss) {
-          geusses[i].innerHTML = geuss;
-          counter += 1;
+        if (word[i] === guess) {
+          guesses[i].innerHTML = guess;
         }
       }
-      var j = (word.indexOf(geuss));
-      if (j === -1) {
-        lives -= 1;
-        comments();
-        animate();
-      } else {
-        comments();
+     
+      // Emit guess to server
+      var guessobj = {
+        letter: guess
       }
+      socket.emit('guess', guessobj);
+
     }
   }
 
   // Play
-  play = function() {
+  play = function(store) {
     categories = [
       ["everton", "liverpool", "swansea", "chelsea", "hull", "manchester-city", "newcastle-united"],
       ["alien", "dirty-harry", "gladiator", "finding-nemo", "jaws"],
@@ -187,22 +175,16 @@ window.onload = function() {
     word = chosenCategory[Math.floor(Math.random() * chosenCategory.length)];
     word = word.replace(/\s/g, "-");
     console.log(word);
-    buttons();
 
-    geusses = [];
-    lives = 10;
-    counter = 0;
+    updatePlaceholders(store.word);
+    buttons();
+    guesses = [];
     space = 0;
-    result();
-    comments();
     selectCat();
     canvas();
   }
 
-  play();
-
   // Hint
-
   hint.onclick = function() {
 
     hints = [
@@ -225,4 +207,32 @@ window.onload = function() {
     context.clearRect(0, 0, 400, 400);
     play();
   }
+
+  // Sockets
+  socket.on('newGame', function(data){
+    console.log('newgame', data);
+    updateLives(data.lives);
+    if(data.lives < 10) animate(data.lives);
+    play(data);
+  });
+
+  socket.on('correctGuess', function(data){
+    console.log("correct", data);
+    updateLives(data.lives);
+  });
+
+  socket.on('incorrectGuess', function(data){
+    console.log("incorrect", data);
+    updateLives(data.lives);
+    animate(data.lives);
+  });
+
+  socket.on('win', function(data){
+    showLives.innerHTML = "You Win!";
+  });
+
+  socket.on('lose', function(data){
+    showLives.innerHTML = "Game Over";
+  });
+
 }
