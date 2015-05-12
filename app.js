@@ -27,7 +27,8 @@ var store = {
   correct: 0,
   lives: 10,
   guessed: [],
-  word: 'nemo'
+  word: 'nemo',
+  state: ['_', '_', '_', '_']
 };
 
 io.on('connection', function(socket){
@@ -37,25 +38,33 @@ io.on('connection', function(socket){
   socket.on('guess', function(data){
     console.log('hi', data.letter);
     var letter = data.letter;
+    store.letter = letter;
     if(store.guessed.indexOf(letter) == -1){
       store.guessed.push(letter);
       if(store.word.indexOf(letter) != -1){
+        for (var i = 0; i < store.word.length; i++) {
+          console.log('AY: ',store.word[i])
+          if (store.word[i] === letter) {
+            store.state[i] = letter;
+          }
+        }
         store.correct++;
         if(store.correct === store.word.length) {
-          socket.emit('win', store);
+          io.emit('win', store);
         }else{
-          socket.emit('correctGuess', store);
+          io.emit('correctGuess', store);
         }
         
       }else{
         store.lives--;
         if (store.lives < 1) {
-          socket.emit('lose', store);
+          io.emit('lose', store);
         }else{
-          socket.emit('incorrectGuess', store);
+          io.emit('incorrectGuess', store);
         }
       }
     }
+    io.emit('updateLetters', store);
   });
 });
 
