@@ -1,5 +1,6 @@
 window.onload = function() {
   var socket = io();
+  var resetGame = 0;
 
   var alphabet = ['a', 'b', 'c', 'd', 'e', 'f', 'g', 'h',
     'i', 'j', 'k', 'l', 'm', 'n', 'o', 'p', 'q', 'r', 's',
@@ -8,7 +9,6 @@ window.onload = function() {
 
   var categories; // Array of topics
   var chosenCategory; // Selected catagory
-  var getHint; // Word getHint
   var guess; // Guess
   var guesses = []; // Stored guesses
   var space; // Number of spaces in word '-'
@@ -16,14 +16,13 @@ window.onload = function() {
   // Get elements
   var showLives = document.getElementById("mylives");
   var showCatagory = document.getElementById("scatagory");
-  var getHint = document.getElementById("hint");
-  var showClue = document.getElementById("clue");
 
   // create alphabet ul
   var buttons = function(word) {
     myButtons = document.getElementById('buttons');
     letters = document.createElement('ul');
-
+    myButtons.innerHTML = '';
+    letters.innerHTML = '';
     for (var i = 0; i < alphabet.length; i++) {
       letters.id = 'alphabet';
       list = document.createElement('li');
@@ -36,21 +35,16 @@ window.onload = function() {
   }
 
   // Select Catagory
-  var selectCat = function() {
-    if (chosenCategory === categories[0]) {
-      catagoryName.innerHTML = "The Chosen Category Is Premier League Football Teams";
-    } else if (chosenCategory === categories[1]) {
-      catagoryName.innerHTML = "The Chosen Category Is Films";
-    } else if (chosenCategory === categories[2]) {
-      catagoryName.innerHTML = "The Chosen Category Is Cities";
-    }
+  var selectCat = function(category) {
+    catagoryName.innerHTML = category;
   }
 
   // Create guesses ul
   updatePlaceholders = function(word) {
     wordHolder = document.getElementById('hold');
     correct = document.createElement('ul');
-
+    guesses = [];
+    wordHolder.innerHTML = '';
     for (var i = 0; i < word.length; i++) {
       correct.setAttribute('id', 'my-word');
       guess = document.createElement('li');
@@ -97,17 +91,6 @@ window.onload = function() {
 
   // Play
   play = function(store) {
-    categories = [
-      ["everton", "liverpool", "swansea", "chelsea", "hull", "manchester-city", "newcastle-united"],
-      ["alien", "dirty-harry", "gladiator", "finding-nemo", "jaws"],
-      ["manchester", "milan", "madrid", "amsterdam", "prague"]
-    ];
-
-    chosenCategory = categories[Math.floor(Math.random() * categories.length)];
-    //word = chosenCategory[Math.floor(Math.random() * chosenCategory.length)];
-    //word = word.replace(/\s/g, "-");
-    //console.log(word);
-
     updatePlaceholders(store.word);
     buttons(store.word);
     updateCorrectLetters(store.state);
@@ -116,31 +99,7 @@ window.onload = function() {
     }
 
     space = 0;
-    selectCat();
-  }
-
-  // Hint
-  hint.onclick = function() {
-
-    hints = [
-      ["Based in Mersyside", "Based in Mersyside", "First Welsh team to reach the Premier Leauge", "Owned by A russian Billionaire", "Once managed by Phil Brown", "2013 FA Cup runners up", "Gazza's first club"],
-      ["Science-Fiction horror film", "1971 American action film", "Historical drama", "Anamated Fish", "Giant great white shark"],
-      ["Northern city in the UK", "Home of AC and Inter", "Spanish capital", "Netherlands capital", "Czech Republic capital"]
-    ];
-
-    var catagoryIndex = categories.indexOf(chosenCategory);
-    var hintIndex = chosenCategory.indexOf(word);
-    showClue.innerHTML = "Clue: - " + hints[catagoryIndex][hintIndex];
-  };
-
-  // Reset
-
-  document.getElementById('reset').onclick = function() {
-    correct.parentNode.removeChild(correct);
-    letters.parentNode.removeChild(letters);
-    showClue.innerHTML = "";
-    context.clearRect(0, 0, 400, 400);
-    play();
+    selectCat(store.hint);
   }
 
   // Sockets
@@ -168,10 +127,18 @@ window.onload = function() {
   socket.on('win', function(data){
     updateCorrectLetters(data.state)
     showLives.innerHTML = "You Win!";
+    setTimeout(function(){
+      console.log('Resetting game');
+      socket.emit('resetGame', resetGame);
+    }, 3000)
   });
 
   socket.on('lose', function(data){
     showLives.innerHTML = "Game Over";
+    setTimeout(function(){
+      console.log('Resetting game');
+      socket.emit('resetGame', resetGame);
+    }, 3000)
   });
 
 }

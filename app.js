@@ -22,35 +22,85 @@ app.get('/', function(req, res){
   res.render('index');
 });
 
-// Sockets
+// Store functions
+var categories = [
+      ["everton", "liverpool", "swansea", "chelsea", "hull", "manchester-city", "newcastle-united"],
+      ["alien", "dirty-harry", "gladiator", "finding-nemo", "jaws"],
+      ["manchester", "milan", "madrid", "amsterdam", "prague"]
+    ];
+
 var store = {
   correct: 0,
   lives: 10,
   guessed: [],
-  word: 'nemo',
-  state: ['_', '_', '_', '_']
+  word: '',
+  hint: '',
+  state: []
 };
 
+// Game State:
+// 1 - Running
+// 0 - Win/Lose
+var gameState = 0;
+
+var newGame = function(){
+  // Get category and hint
+  var chosenCategory = categories[Math.floor(Math.random() * categories.length)];
+  var hint = 'The category is ';
+  if (chosenCategory === categories[0]) {
+    hint += "Premier League Football Teams";
+  } else if (chosenCategory === categories[1]) {
+    hint += "Films";
+  } else if (chosenCategory === categories[2]) {
+    hint += "Cities";
+  }
+  store.hint = hint;
+  // Get the word
+  store.word = chosenCategory[Math.floor(Math.random() * chosenCategory.length)];
+  // Set the state
+  var tempState = []
+  var lettersLeft = 0;
+  for(var i in store.word){
+    if(store.word[i] != '-' && store.word[i] != ' '){
+      tempState.push('_');
+      lettersLeft++;
+    }else{
+      tempState.push(' ');
+    }
+  }
+  store.state = tempState;
+  // Reset variables
+  store.correct = lettersLeft;
+  store.lives = 10;
+  store.guessed = [];
+}
+
+// Start the game for the first time
+newGame();
+gameState = 1;
+
+// Sockets
 io.on('connection', function(socket){
   // Emit store state on first connection
   socket.emit('newGame', store);
 
   socket.on('guess', function(data){
-    console.log('hi', data.letter);
+    if(gameState != 1) return;
+
     var letter = data.letter;
     store.letter = letter;
     if(store.guessed.indexOf(letter) == -1){
       store.guessed.push(letter);
       if(store.word.indexOf(letter) != -1){
         for (var i = 0; i < store.word.length; i++) {
-          console.log('AY: ',store.word[i])
           if (store.word[i] === letter) {
             store.state[i] = letter;
+            store.correct--;
           }
         }
-        store.correct++;
-        if(store.correct === store.word.length) {
+        if(store.correct <= 0) {
           io.emit('win', store);
+          gameState = 0;
         }else{
           io.emit('correctGuess', store);
         }
@@ -59,6 +109,7 @@ io.on('connection', function(socket){
         store.lives--;
         if (store.lives < 1) {
           io.emit('lose', store);
+          gameState = 0;
         }else{
           io.emit('incorrectGuess', store);
         }
@@ -66,6 +117,17 @@ io.on('connection', function(socket){
     }
     io.emit('updateLetters', store);
   });
+
+  // Reset Game
+  socket.on('resetGame', function(data){
+    console.log("resetGame", data);
+    if(data === 0){
+      gameState = 1;
+      newGame();
+      socket.emit('newGame', store);
+    }
+  });
+
 });
 
 http.listen(app.get('port'), function() {
