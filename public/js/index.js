@@ -141,4 +141,8 @@ window.onload = function() {
     }, 3000)
   });
 
+  socket.on('updateConnected', function(data){
+    $("#connected").text(data);
+  });
+
 }

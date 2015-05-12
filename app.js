@@ -41,7 +41,10 @@ var store = {
 // Game State:
 // 1 - Running
 // 0 - Win/Lose
-var gameState = 0;
+var logistics = {
+  gameState: 0,
+  numConnected: 0
+};
 
 var newGame = function(){
   // Get category and hint
@@ -77,15 +80,22 @@ var newGame = function(){
 
 // Start the game for the first time
 newGame();
-gameState = 1;
+logistics.gameState = 1;
 
 // Sockets
 io.on('connection', function(socket){
   // Emit store state on first connection
+  logistics.numConnected++;
   socket.emit('newGame', store);
+  io.emit('updateConnected', logistics.numConnected);
+
+  socket.on('disconnect', function () {
+    logistics.numConnected--;
+    io.emit('updateConnected', logistics.numConnected);
+  });
 
   socket.on('guess', function(data){
-    if(gameState != 1) return;
+    if(logistics.gameState != 1) return;
 
     var letter = data.letter;
     store.letter = letter;
@@ -100,7 +110,7 @@ io.on('connection', function(socket){
         }
         if(store.correct <= 0) {
           io.emit('win', store);
-          gameState = 0;
+          logistics.gameState = 0;
         }else{
           io.emit('correctGuess', store);
         }
@@ -109,7 +119,7 @@ io.on('connection', function(socket){
         store.lives--;
         if (store.lives < 1) {
           io.emit('lose', store);
-          gameState = 0;
+          logistics.gameState = 0;
         }else{
           io.emit('incorrectGuess', store);
         }
@@ -122,7 +132,7 @@ io.on('connection', function(socket){
   socket.on('resetGame', function(data){
     console.log("resetGame", data);
     if(data === 0){
-      gameState = 1;
+      logistics.gameState = 1;
       newGame();
       socket.emit('newGame', store);
     }
