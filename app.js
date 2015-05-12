@@ -134,7 +134,7 @@ io.on('connection', function(socket){
     if(data === 0){
       logistics.gameState = 1;
       newGame();
-      socket.emit('newGame', store);
+      io.emit('newGame', store);
     }
   });
 

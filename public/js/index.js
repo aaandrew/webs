@@ -11,7 +11,6 @@ window.onload = function() {
   var chosenCategory; // Selected catagory
   var guess; // Guess
   var guesses = []; // Stored guesses
-  var space; // Number of spaces in word '-'
 
   // Get elements
   var showLives = document.getElementById("mylives");
@@ -51,7 +50,6 @@ window.onload = function() {
       guess.setAttribute('class', 'guess');
       if (word[i] === "-") {
         guess.innerHTML = "-";
-        space = 1;
       } else {
         guess.innerHTML = "_";
       }
@@ -97,8 +95,6 @@ window.onload = function() {
     for(i in store.guessed){
       updateButtonLetter(store.guessed[i]);
     }
-
-    space = 0;
     selectCat(store.hint);
   }
 
