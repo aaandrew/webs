@@ -138,7 +138,15 @@ window.onload = function() {
   });
 
   socket.on('updateConnected', function(data){
+    var animation = 'animated bounce';
+    var animationEnd = 'webkitAnimationEnd mozAnimationEnd MSAnimationEnd oanimationend animationend';
     $("#connected").text(data);
+    $('#connected').removeClass(animation);
+    $('#connected')
+      .addClass(animation)
+      .one(animationEnd, function(){
+        $(this).removeClass(animation);
+      });
   });
 
 }

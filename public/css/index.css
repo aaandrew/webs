@@ -153,3 +153,13 @@ button:hover {
     padding: 0 0 0 25px;
   }
 }
+
+#connected {
+  color: #3474af;
+}
+
+#connected:hover {
+  color: white;
+}
+
+
