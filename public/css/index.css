@@ -1,9 +1,9 @@
 /* Variabes */
 /* Mixin's */
 body {
-  background: #c1d72e;
+  background: #F1F1F1;
+  color: #808080;
   font-family: "HelveticaNeue-Light", "Helvetica Neue Light", "Helvetica Neue", Helvetica, Arial, "Lucida Grande", sans-serif;
-  color: #fff;
   height: 100%;
   text-align: center;
   font-size: 18px;
@@ -62,19 +62,15 @@ p {
   width: 35px;
   height: 30px;
   padding-top: 10px;
-  background: #fff;
-  color: #c1d72e;
   cursor: pointer;
-  -moz-border-radius: 5px;
-  -webkit-border-radius: 5px;
   border-radius: 5px;
-  -khtml-border-radius: 5px;
-  border: solid 1px #fff;
 }
 #alphabet li:hover {
-  background: #c1d72e;
-  border: solid 1px #fff;
-  color: #fff;
+  color: white;
+  background-color: #808080;
+  -moz-transition: all 0.3s ease-in;
+  -moz-transition: all 0.3s ease-in-out;
+  -webkit-transition: all 0.3s ease-in-out;
 }
 
 #my-word {
@@ -123,7 +119,7 @@ button {
   -webkit-border-radius: 5px;
   border-radius: 5px;
   -khtml-border-radius: 5px;
-  background: #c1d72e;
+  background: #F1F1F1;
   color: #fff;
   border: solid 1px #fff;
   text-decoration: none;
@@ -140,7 +136,7 @@ button:hover {
   transition: all 0.3s ease-in-out;
   background: #fff;
   border: solid 1px #fff;
-  color: #c1d72e;
+  color: #F1F1F1;
 }
 
 @media (max-width: 767px) {
