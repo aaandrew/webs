@@ -61,7 +61,7 @@ p {
   list-style: none;
   width: 35px;
   height: 30px;
-  padding-top: 10px;
+  padding-top: 7px;
   cursor: pointer;
   border-radius: 5px;
 }
@@ -154,6 +154,13 @@ button:hover {
 }
 
 #connected:hover {
+}
+
+.bottom {
+  width: 100%;
+  position: absolute;
+  bottom: 10px;
+  text-align: center;
 }
 
 
