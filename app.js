@@ -2,31 +2,14 @@ var express = require('express');
 var path = require('path');
 var bodyParser = require('body-parser');
 var handlebars = require('express-handlebars');
+var hbsExtend = require('express-handlebars-extend');
 var app = express();
 var http = require('http').Server(app);
 var io = require('socket.io')(http);
 
-// Handlebars extend helper
-// Borrowed from https://github.com/defunctzombie/handlebars-extend-block
-// http://stackoverflow.com/questions/21737057/handlebars-with-express-different-html-head-for-different-pages
-var hbsHelers = {
-  extend: function(name, context) {
-    if(!this._sections) this._sections = {};
-    var block = this._sections[name];
-    if(!block) block = this._sections[name] = [];
-    this._sections[name].push(context.fn(this));
-  },
-
-  block: function(name) {
-    var val = (this._sections[name] || []).join('\n');
-   // clear the block
-   this._sections[name] = [];
-   return val;
-  }
-};
-
 //Configures the Template engine
-app.engine('handlebars', handlebars({defaultLayout: 'layout', helpers: hbsHelers}));
+var hbs = hbsExtend(handlebars.create({defaultLayout: 'layout'}));
+app.engine('handlebars', hbs.engine);
 app.set('view engine', 'handlebars');
 app.set('views', __dirname + '/views');
 app.use(express.static(path.join(__dirname, 'public')));
