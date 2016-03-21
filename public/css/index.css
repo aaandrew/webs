@@ -1,22 +1,16 @@
 /* Variabes */
 /* Mixin's */
+html, 
 body {
-  background: #F1F1F1;
-  color: #808080;
-  font-family: "HelveticaNeue-Light", "Helvetica Neue Light", "Helvetica Neue", Helvetica, Arial, "Lucida Grande", sans-serif;
-  height: 100%;
-  text-align: center;
-  font-size: 18px;
+    height: 100%;
 }
 
-.wrappper {
-  width: 100%;
-  margin: 0 auto;
-}
-.wrappper:after {
-  content: "";
-  display: table;
-  clear: both;
+body {
+  margin: 0;
+  background: #F1F1F1;
+  color: #808080;
+  font-family: "Helvetica Neue",Helvetica,Arial,sans-serif;
+  font-size: 18px;
 }
 
 canvas {
@@ -164,3 +158,67 @@ button:hover {
 }
 
 
+/************* Welcome Section *****************/
+
+section.welcome {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+
+  height: 100%;
+  color: #ECF0F1;
+  background-color: #67809F;
+}
+
+section.welcome > .wrapper {
+  max-width: 600px;
+  width: 60%;
+  margin-bottom: 12%;
+}
+
+section.welcome > .wrapper > .title {
+  letter-spacing: 1px;
+  font-size: 64px;
+  font-weight: 100;
+  margin-bottom: 80px;
+}
+
+section.welcome > .wrapper > .details {
+  letter-spacing: 1px;
+  font-size: 36px;
+  font-weight: 100;
+}
+
+section.welcome .links {
+  display: flex;
+  justify-content: space-around;
+  margin-top: 40px;
+}
+
+section.welcome .links a {
+  color: #ECF0F1;
+  font-size: 24px;
+  text-decoration: none;
+}
+
+/************* Hangman Section *****************/
+
+.hangman-container {
+  height: 100%;
+  text-align: center;
+}
+
+.hangman-container > .wrapper {
+  padding-top: 50px;
+}
+
+.hangman-container .credits {
+  font-size: 14px;
+}
+
+.hangman-container .credits a {
+  color: inherit;
+  font-weight: bold;
+  text-decoration: none;
+}

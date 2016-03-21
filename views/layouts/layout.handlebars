@@ -2,9 +2,8 @@
 <html>
 <head>
 	<title>Andrew Du</title>	
-	<meta charset="utf-8">
-	<meta name="viewport" content="width=device-width, initial-scale=1.0">
 	<link rel="stylesheet" href="css/lib/animate.css">
+  {{{block "css"}}}
 
   <!-- Scripts -->
   <script>
@@ -15,16 +14,16 @@
     ga('create', 'UA-63052731-1', 'auto');
     ga('send', 'pageview');
   </script>
-</head>
-
-<body>
-  <script src="https://code.jquery.com/jquery.js"></script>
   <script src="/socket.io/socket.io.js"></script>
   <script>
     var socket = io();
   </script>
+</head>
 
-  {{{body}}}    
-    
+<body>
+
+  {{{body}}}
+  <script src="https://code.jquery.com/jquery.js"></script>
+  {{{block "js"}}}
 </body>
 </html>

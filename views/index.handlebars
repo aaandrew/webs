@@ -1,34 +1,40 @@
-<div class="wrapper">
-	<h1>Hangman and Socket.IO</h1>
-</div>
-<div class="wrapper">
-	<div id="buttons">
-	</div>  
-	<p id="catagoryName"></p>
-	<div id="hold">
-	</div>
-	<p id="mylives"></p>
-</div>
-<span class="container">
-	<span id="connected" class="animated bounce"></span> homies
-</span>
-<div>
-credits to: <a href='http://codepen.io/cathydutton/pen/ldazc'>http://codepen.io/cathydutton/pen/ldazc</a>
-</div>
+{{#extend "css"}}
+<link rel="stylesheet" href="/css/index.css"/>
+{{/extend}}
 
-<footer>
-	<div class="bottom">
-		<span>
-			<a href="http://github.com/aaandrew">Github</a>
-		</span>
-		<span>
-			<a href="http://www.linkedin.com/in/duandrew">LinkedIn</a>
-		</span>
-		<span>
-			<a href="http://codepen.io/aaandrew">Codepen</a>
-		</span>
-	</div>
-</footer>
+<section class="welcome">
+  <div class="wrapper">
+    <div class="title">Hi I'm Andrew!</div>
+    <div class="details">I’m currently an undergraduate student studying computer science at UCSD</div>
+    <div class="links">
+      <a href="https://codepen.io/aaandrew">codepen</a>
+      <a href="https://www.github.com/aaandrew">github</a>
+      <a href="https://www.linkedin.com/in/duandrew">linkedin</a>
+      <a href="https://www.dropbox.com/s/yotytozvsfihw9g/AndrewDuResumePublic.pdf">resume</a>
+    </div>
+  </div>
+</section>
 
-<link rel="stylesheet" type="text/css" href="css/index.css">
-<script type="text/javascript" src="js/index.js"></script>
+<section class="hangman-container">
+  <div class="wrapper">
+    <h1>Hangman and Socket.IO</h1>
+    <div>
+      <div id="buttons">
+      </div>  
+      <p id="catagoryName"></p>
+      <div id="hold">
+      </div>
+      <p id="mylives"></p>
+    </div>
+    <span class="container">
+      <span id="connected" class="animated bounce"></span> homies
+    </span>
+    <div class="credits">
+    credits to: <a href='https://codepen.io/cathydutton/pen/ldazc'>codepen.io/cathydutton/pen/ldazc</a>
+    </div>
+  </div>
+</section>
+
+{{#extend "js"}}
+<script src="/js/index.js"></script>
+{{/extend}}
